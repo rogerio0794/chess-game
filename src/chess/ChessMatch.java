@@ -1,6 +1,9 @@
 package chess;
 
 import boardGame.Board;
+import boardGame.Position;
+import chess.pieces.King;
+import chess.pieces.Rook;
 
 public class ChessMatch {
 	
@@ -9,6 +12,7 @@ public class ChessMatch {
 	
 	public ChessMatch() {
 		board = new Board(8, 8);  // Criando o tabuleiro 8x8 do xadrez
+		initialSetup();
 	}
 	
 	
@@ -23,6 +27,18 @@ public class ChessMatch {
 		}
 		return mat;
 		
+	}
+	
+	
+	// Iniciar a partida de xadreex colocando as peças no tabuleiro
+	private void initialSetup() {
+		board.PlacePiece(new Rook(board, Color.WHITE), new Position(4,1));
+		board.PlacePiece(new King(board, Color.WHITE), new Position(5,1));
+		board.PlacePiece(new Rook(board, Color.BLACK), new Position(6,4));
+		board.PlacePiece(new Rook(board, Color.BLACK), new Position(0,0));
+		
+		
+		// Perceba que as posições são correspondentes a matriz e não o tabuleiro posioção 8a do tabuleiro corresponde a 0,0 da matriz
 	}
 	
 	

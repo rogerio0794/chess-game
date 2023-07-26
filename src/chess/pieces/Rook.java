@@ -4,16 +4,17 @@ import boardGame.Board;
 import chess.ChessPiece;
 import chess.Color;
 
-public class King extends ChessPiece {
+public class Rook extends ChessPiece {
 
-	public King(Board board, Color color) {
+	public Rook(Board board, Color color) {
 		super(board, color);
 	}
-	
+
 	@Override
 	public String toString() {
-		return "K"; // Vai aparecer o "K" na posiçao do torre no tabuleiro
+		return "R"; // Vai aparecer o "R" na posiçao do torre no tabuleiro
 	}
+	
 	
 
 }
