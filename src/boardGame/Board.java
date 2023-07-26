@@ -30,8 +30,16 @@ public class Board {
 	}
 	
 	
+	// Retornar uma peça atraves das coordenadas separadas
+	public Piece piece(int row, int column) {
+		return pieces[row][column];
+	}
+ 	
 	
-	
+	// Retornar uma peça atraves da posição
+		public Piece piece(Position position) {
+			return pieces[position.getRow()][position.getColumn()];
+		}
 	
 	
 	
