@@ -29,13 +29,25 @@ public class ChessMatch {
 		
 	}
 	
+	// Iniciar a partida de xadreex colocando as peças no tabuleiro pela posição da peça no tabuleiro
+		private void placenewPieace(char column, int row, ChessPiece piece) {
+			board.PlacePiece(piece, new ChessPosition(column, row).toPosition());
+		}
 	
-	// Iniciar a partida de xadreex colocando as peças no tabuleiro
-	private void initialSetup() {
-		board.PlacePiece(new Rook(board, Color.WHITE), new Position(4,1));
-		board.PlacePiece(new King(board, Color.WHITE), new Position(5,1));
-		board.PlacePiece(new Rook(board, Color.BLACK), new Position(6,4));
-		board.PlacePiece(new Rook(board, Color.BLACK), new Position(0,0));
+	
+	// Iniciar a partida de xadreex colocando as peças no tabuleiro pela posição da peça na matriz
+	private void initialSetup() {			
+		// Aqui colocamos a peça de acordo com as posições to tabuleiro de xadrez e não da matriz
+		placenewPieace('b',6, new Rook(board, Color.WHITE));
+		placenewPieace('a',8, new King(board, Color.WHITE));
+		placenewPieace('c',1, new Rook(board, Color.BLACK));
+		placenewPieace('e',3, new King(board, Color.BLACK));
+		
+		
+//		board.PlacePiece(new Rook(board, Color.WHITE), new Position(4,1));
+//		board.PlacePiece(new King(board, Color.WHITE), new Position(5,1));
+//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(6,4));
+//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(0,0));
 		
 		
 		// Ver os erros
