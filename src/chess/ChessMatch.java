@@ -38,6 +38,13 @@ public class ChessMatch {
 		board.PlacePiece(new Rook(board, Color.BLACK), new Position(0,0));
 		
 		
+		// Ver os erros
+//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(6,4));
+//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(9,4));
+//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(9,9));
+//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(0,9));
+	
+		
 		// Perceba que as posições são correspondentes a matriz e não o tabuleiro posioção 8a do tabuleiro corresponde a 0,0 da matriz
 	}
 	
