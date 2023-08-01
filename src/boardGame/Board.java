@@ -47,7 +47,7 @@ public class Board {
 			throw new BoardException("Já existe uma peça na posição " + position);
 		}
 		pieces[position.getRow()][position.getColumn()] = piece; // Pegar a matriz na posição dada e atribuir a peça
-		piece.position = position;
+//		piece.position = position;
 	}
 
 	// Metodo auxiliar do de baixo
