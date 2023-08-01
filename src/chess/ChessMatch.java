@@ -33,6 +33,12 @@ public class ChessMatch {
 
 	}
 	
+	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
+		Position position = sourcePosition.toPosition();
+		validateSourcePosition(position);
+		return board.piece(position).possibleMoves();
+	}
+	
 	
 	// Metodo para mover a peça de um lugar para outro
 	public ChessPiece performChessMove(ChessPosition  sourcePosition, ChessPosition targetposition) {
@@ -40,15 +46,39 @@ public class ChessMatch {
 		Position source = sourcePosition.toPosition();
 		Position target = targetposition.toPosition();
 		
-		// Existência da posição
-		if (!board.thereIsAPiece(source)) {
-			throw new ChessException("Não existe peça na posição de origem");
-		}
+		// Método para validar posição de origem
+		validateSourcePosition(source);
+		
+		// Método para validar posição de destino
+		validadeTargetPosition(source,target);
 		
 		Piece capturedPiece = makeMove(source,target);
 		return (ChessPiece) capturedPiece;		
 		
 	}
+	
+	
+	private void validateSourcePosition(Position position) {
+		
+		// Existência da posição de origem
+		if (!board.thereIsAPiece(position)) {
+			throw new ChessException("Não existe peça na posição de origem");
+		}
+		
+		// Existe movimento possiveis para peça?
+		if (!board.piece(position).isThereAnyPossibleMove()) {
+			throw new ChessException("Não existe movimento possivel para peça escolhida");
+		}
+		
+	}
+	
+	private void validadeTargetPosition(Position source, Position target) {
+		// Testar se o movimento destino é possivel em relação a origem
+		if (!board.piece(source).possibleMove(target)) { // A peça de origem no tabuleiro pode se movimentar para o destino especificado?
+			throw new ChessException("A peça escolhida não pode se mover para posição de destino");
+		}
+	}
+	
 	
 	
 	public Piece makeMove(Position source, Position target) {

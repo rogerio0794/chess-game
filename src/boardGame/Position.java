@@ -28,6 +28,12 @@ public class Position {
 	public void setColumn(int column) {
 		this.column = column;
 	}
+	
+	// Atualizar os valores de uma posição
+		public void setValues(int row, int column) {
+			this.row = row;
+			this.column = column;				
+		}
 
 
 	@Override
@@ -35,13 +41,8 @@ public class Position {
 		return "row=" + row + ", column=" + column + "";
 	}
 
-	public void setValues(int row, int column) {
-		this.row = row;
-		this.column = column;	
-		
-		
-		
-	}
+	
+	
 	
 
 }

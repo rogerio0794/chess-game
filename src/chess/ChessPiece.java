@@ -2,8 +2,12 @@ package chess;
 
 import boardGame.Board;
 import boardGame.Piece;
+import boardGame.Position;
 
-public class ChessPiece extends Piece {
+
+// ChessPiece ainda é muito genérica, eu não tenho como definir os movimentos das peças aqui
+//Logo usa-se abstact
+public abstract class ChessPiece extends Piece {
 	
 	
 	private Color color;
@@ -22,6 +26,12 @@ public class ChessPiece extends Piece {
 	}
 	
 	
+	// Ver se tem uma peça inimiga na posição especifica
+	protected boolean isThereOpponentPiece(Position position) {
+		ChessPiece p = (ChessPiece) getBoard().piece(position);  // getBoard é um metodo da classe Piece
+		return p != null &&  p.getColor()  != color ;
+		
+	}
 	
 	
 
