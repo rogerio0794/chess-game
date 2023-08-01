@@ -49,6 +49,27 @@ public class Board {
 		pieces[position.getRow()][position.getColumn()] = piece; // Pegar a matriz na posição dada e atribuir a peça
 //		piece.position = position;
 	}
+	
+	
+	
+	// Remover peça do tabuleiro
+	public Piece removePiece(Position position) {
+		if (!positionExists(position)) {
+			throw new BoardException("Posição inexistente no tabuleiro");
+		}
+		if (piece(position) == null) {
+			return null;
+		}
+		Piece aux = piece(position);
+		aux.position = null;
+		pieces[position.getRow()][position.getColumn()] = null;
+		return aux; // Retorno a peça que foi retirada
+		
+	}
+	
+	
+	
+	
 
 	// Metodo auxiliar do de baixo
 	private boolean positionExists(int row, int column) {
