@@ -26,7 +26,9 @@ public class Programa {
 		// Lista de peças
 		List<ChessPiece> captured = new ArrayList<>();
 
-		while (true) {
+		
+		// Enquanto checkMate for falso roda o loop
+		while (!chessMatch.getCheckMatch()) {
 
 			try {
 
@@ -73,6 +75,9 @@ public class Programa {
 			}
 
 		}
+		
+//		UI.clearScreen();
+		UI.printMatch(chessMatch, captured);
 
 	} 
 

@@ -22,7 +22,7 @@ public class ChessMatch {
 	
 	
 	private boolean check; // Ver se o rei está em check ou não
-	
+	private boolean checkMatch; 
 	
 	
 	
@@ -53,6 +53,10 @@ public class ChessMatch {
 	
 	public boolean getCheck() {
 		return check;
+	}	
+	
+	public boolean getCheckMatch() {
+		return checkMatch;
 	}	
 	
 	// Metodo para trocar o turno
@@ -120,10 +124,15 @@ public class ChessMatch {
 		
 		
 		
+		// Testar o cheque mate para acabar o jogo
+		if (testCheckMate(opponent(currentPlayer))) {
+			checkMatch = true; 
+		} else {
+			checkMatch = false; 
+			nextTurn();
+		}
 		
 		
-		
-		nextTurn();
 		return (ChessPiece) capturedPiece;		
 		
 	}
@@ -273,17 +282,75 @@ public class ChessMatch {
 	}
 	
 	
+	private boolean testCheckMate(Color color) {
+		
+		// Testar se ele ta em xeque primeiro
+		if (!testCheck(color)) {
+			return false;
+		}
+		
+		// Criar uma lista com as minhas peças do tabuleiro
+		List<Piece> list = piecesOnTheBoard.stream().filter(x ->  ((ChessPiece)x).getColor() == color).collect(Collectors.toList())	;
+		
+		
+		// O que vai ser feito: Se tiver alguma peça minha que pode fazer algum movimento que tira o meu rei de check eu retorno false
+		// Se esgosta meu for e não encontrar nenhum movimento possivel para isto, retorno true
+		for (Piece p: list) {
+			
+			// Matriz com os movimentos possiveis da peça
+			boolean[][] mat = p.possibleMoves(); 
+			// Percorrer matriz
+			for (int i =0; i <board.getRows();i++) {
+				for (int j =0; j <board.getColumns();j++) {
+					
+					// Pegando as posições que é possivel o movimento
+					if (mat[i][j]) {
+						// Testando se esse movimento especifico tira o check
+						// Como será feito: Eu vou colocar a peça p nesta posição especifica e testar o CHECK (APENAS CHECK)						
+						// MOVENDO ENTÃO (primeiro pegando a posição de origem e destino)
+						// getChessPosition pega a posção no xadrez e toPosition converte para matriz
+						Position source = ((ChessPiece)p).getChessPosition().toPosition();
+						Position target = new Position(i, j);
+						
+						// Fazendo o movimento
+						Piece capturedPiece = makeMove(source, target);
+						
+						// Testando se o rei da minha cor ainda está em cheque depois do movimento
+						boolean testCheck = testCheck(color);
+						
+						// Desfazer o movimento, só queriamos testar
+						undoMove(source, target, capturedPiece);
+						
+						// Se testCheck é falso, significa que o rei não está em xeque então o xequeMate é falso
+						if (!testCheck) {
+							return false;
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		return true;
+	}
+	
+	
 
 	// Iniciar a partida de xadreex colocando as peças no tabuleiro pela posição da
 	// peça na matriz
 	private void initialSetup() {
 		// Aqui colocamos a peça de acordo com as posições to tabuleiro de xadrez e não
 		// da matriz
-		placenewPiece('b', 6, new Rook(board, Color.WHITE));
-		placenewPiece('a', 8, new King(board, Color.WHITE));
-		placenewPiece('f', 5, new King(board, Color.WHITE));
-		placenewPiece('c', 1, new Rook(board, Color.BLACK));
-		placenewPiece('e', 3, new King(board, Color.BLACK));
+		placenewPiece('h', 7, new Rook(board, Color.WHITE));
+		placenewPiece('d', 1, new Rook(board, Color.WHITE));
+		placenewPiece('e', 1, new King(board, Color.WHITE));
+		
+		
+		placenewPiece('b', 8, new Rook(board, Color.BLACK));
+		placenewPiece('a', 8, new King(board, Color.BLACK));
 
 
 	}
