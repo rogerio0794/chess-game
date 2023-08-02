@@ -4,6 +4,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import boardGame.Board;
 import boardGame.Piece;
@@ -18,6 +19,13 @@ public class ChessMatch {
 	private int turn; // quem faz a jogada agora
 	private Color currentPlayer; // Jogador atual
 	
+	
+	
+	private boolean check; // Ver se o rei está em check ou não
+	
+	
+	
+	
 	// Lista de peças no tabuleiro e as capturadas
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
@@ -31,6 +39,7 @@ public class ChessMatch {
 		turn = 1; // Inicio da partida
 		currentPlayer = Color.WHITE; // Jogador inicial é o com as peças brancas		
 		initialSetup();
+		check = false;
 	}
 	
 	public int getTurn() {
@@ -41,6 +50,10 @@ public class ChessMatch {
 		return currentPlayer;
 	}
 	
+	
+	public boolean getCheck() {
+		return check;
+	}	
 	
 	// Metodo para trocar o turno
 	private void nextTurn () {
@@ -90,6 +103,26 @@ public class ChessMatch {
 		validadeTargetPosition(source,target);
 		
 		Piece capturedPiece = makeMove(source,target);
+		
+		
+		// Testar se o jogador deixou seu proprio rei em xeque
+		if (testCheck(currentPlayer)) {
+			undoMove(source, target, capturedPiece);
+			throw new ChessException("Movimento inválido, você deixou sem rei em xeque");
+		}
+		
+		// Testar se o rei do adversário ficou em xeque
+		if (testCheck(opponent(currentPlayer))) {
+			check = true; // Rei adversário em xeque
+		} else {
+			check = false; //Rei não está em xeque
+		}
+		
+		
+		
+		
+		
+		
 		nextTurn();
 		return (ChessPiece) capturedPiece;		
 		
@@ -148,17 +181,98 @@ public class ChessMatch {
 	}
 	
 	
+	// Método de desfazer o movimento  caso eu mexa alguma peça e deixe meu Rei em xeque
+	public void undoMove(Position source, Position target, Piece capturedPiece) {
+		// Basicamente desfazer o que é feito no método makeMove (acima)
+		
+		// Tirando a peça que colocamos no destino
+		Piece p = board.removePiece(target);
+		// Devolvendo a peça para sua origem
+		board.PlacePiece(p, source);
+		
+		
+		// Se uma peça for capturada eu preciso voltar ela para sua posição que é a destino do movimento
+		if (capturedPiece != null) {
+			board.PlacePiece(capturedPiece, target);
+			
+			// Tirar essa peça da lista de peças capturas e colocar na lista das peças do tabuleiros
+			capturedPieces.remove(capturedPiece);
+			piecesOnTheBoard.add(capturedPiece);
+		}
+		
+		
+	}
+	
+	
 	
 
 	// Iniciar a partida de xadreex colocando as peças no tabuleiro pela posição da
 	// peça no tabuleiro
 	private void placenewPiece(char column, int row, ChessPiece piece) {
 		board.PlacePiece(piece, new ChessPosition(column, row).toPosition());
-
+		piecesOnTheBoard.add(piece);
 //			poderia fazer assim
 //			ChessPosition posicao = new ChessPosition(column, row);
 //			board.PlacePiece(piece, posicao.toPosition();
 	}
+	
+	
+	// Método que devolve a cor do oponente
+	private Color opponent (Color color) {
+		if (color == Color.WHITE) {
+			return Color.BLACK;
+		} else {
+			return Color.WHITE;
+		}
+		
+	}
+
+	
+
+	
+	// Método para localizar um rei de uma cor especifica
+	private ChessPiece king(Color color) {
+		
+		// Filtrando a lista procurando as peças de uma cor espcifica
+		List<Piece> list = piecesOnTheBoard.stream().filter(x ->  ((ChessPiece)x).getColor() == color).collect(Collectors.toList())	;
+		// Necessidade de fazer um downcasting visto que o que tem cor é a ChessPiece e não a PIECE
+		
+		// Percorrer a lista e achar qual peça é um rei
+		for (Piece p: list) {
+			if (p instanceof King) { // Encontrei o rei
+				
+				return (ChessPiece)p;
+			}
+		}
+		throw new IllegalStateException("Não existe nenhum rei de cor " + color + " no tabuleiro");
+	}
+	
+	
+	// Método para testar se o rei está em check
+	// Eu preciso percorrer todas as peças adversários do tabuleiro uma a uma e ver
+	// Se essa peça consegue fazer um movimento que mate o rei
+	// Testar se o rei da cor X está em cheque
+	private boolean testCheck(Color color) {
+		
+		
+		// Posição do rei em termos de matriz
+		Position kingPosition = king(color).getChessPosition().toPosition();
+		
+		// Lista de peças do oponente
+		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x ->  ((ChessPiece)x).getColor() == opponent(color)).collect(Collectors.toList())	;
+		
+		// Agora vou testar cada peça dessa lista se ela consegue matar o rei
+		for (Piece p: opponentPieces ) {
+			boolean[][] mat = p.possibleMoves(); // Aqui temos os movimentos possiveis da peça p
+			if (mat[kingPosition.getRow()][kingPosition.getColumn()]) { // Se essa matriz mat na posição do rei for true, siginifica q o rei está em xeque
+				return true;
+			}
+		}
+		return false;
+		
+	}
+	
+	
 
 	// Iniciar a partida de xadreex colocando as peças no tabuleiro pela posição da
 	// peça na matriz
@@ -167,25 +281,11 @@ public class ChessMatch {
 		// da matriz
 		placenewPiece('b', 6, new Rook(board, Color.WHITE));
 		placenewPiece('a', 8, new King(board, Color.WHITE));
+		placenewPiece('f', 5, new King(board, Color.WHITE));
 		placenewPiece('c', 1, new Rook(board, Color.BLACK));
 		placenewPiece('e', 3, new King(board, Color.BLACK));
 
-//		placenewPiece('e',3, new King(board, Color.BLACK));
-//		placenewPiece('p',3, new King(board, Color.BLACK));
 
-//		board.PlacePiece(new Rook(board, Color.WHITE), new Position(4,1));
-//		board.PlacePiece(new King(board, Color.WHITE), new Position(5,1));
-//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(6,4));
-//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(0,0));
-
-		// Ver os erros
-//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(6,4));
-//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(9,4));
-//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(9,9));
-//		board.PlacePiece(new Rook(board, Color.BLACK), new Position(0,9));
-
-		// Perceba que as posições são correspondentes a matriz e não o tabuleiro
-		// posioção 8a do tabuleiro corresponde a 0,0 da matriz
 	}
 
 }

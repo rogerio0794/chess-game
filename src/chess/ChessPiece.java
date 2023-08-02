@@ -26,6 +26,13 @@ public abstract class ChessPiece extends Piece {
 	}
 	
 	
+	// Pegar a posição da peça do xadrez
+	public ChessPosition getChessPosition() {			
+		return ChessPosition.fromPosition(position);
+		
+	}
+	
+	
 	// Ver se tem uma peça inimiga na posição especifica
 	protected boolean isThereOpponentPiece(Position position) {
 		ChessPiece p = (ChessPiece) getBoard().piece(position);  // getBoard é um metodo da classe Piece
