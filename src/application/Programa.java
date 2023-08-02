@@ -28,7 +28,7 @@ public class Programa {
 //				UI.clearScreen();
 
 				// Imprimir o tabuleiro do xadrex
-				UI.printBoard(chessMatch.getPieces());
+				UI.printMatch(chessMatch);
 				System.out.println();
 				System.out.print("Source: ");
 				ChessPosition source = UI.readChessPosition(sc);
@@ -58,6 +58,6 @@ public class Programa {
 
 		}
 
-	}
+	} 
 
 }

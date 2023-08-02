@@ -11,13 +11,38 @@ import chess.pieces.Rook;
 public class ChessMatch {
 
 	private Board board; // Uma partida de xadrex precisa de uma tabuleiro
+	
+	private int turn; // quem faz a jogada agora
+	private Color currentPlayer; // Jogador atual
+	
 
 	public ChessMatch() {
-		board = new Board(8, 8); // Criando o tabuleiro 8x8 do xadrez
+		board = new Board(8, 8); // Criando o tabuleiro 8x8 do xadrez		
+		turn = 1; // Inicio da partida
+		currentPlayer = Color.WHITE; // Jogador inicial é o com as peças brancas		
 		initialSetup();
 	}
-
 	
+	public int getTurn() {
+		return turn;
+	}
+
+	public Color getCurrentPlayer() {
+		return currentPlayer;
+	}
+	
+	
+	// Metodo para trocar o turno
+	private void nextTurn () {
+		turn++;
+		if (currentPlayer == Color.WHITE) {
+			currentPlayer = Color.BLACK;
+		} else {
+			currentPlayer = Color.WHITE;
+		}
+		
+	}
+
 
 	// Metodo para retornar a peça de xadrex dentro de uma posição especifica
 	public ChessPiece[][] getPieces() {
@@ -55,6 +80,7 @@ public class ChessMatch {
 		validadeTargetPosition(source,target);
 		
 		Piece capturedPiece = makeMove(source,target);
+		nextTurn();
 		return (ChessPiece) capturedPiece;		
 		
 	}
@@ -66,6 +92,13 @@ public class ChessMatch {
 		if (!board.thereIsAPiece(position)) {
 			throw new ChessException("Não existe peça na posição de origem");
 		}
+		
+		// Verificar se o jogador esta escolhendo uma peça sua para mover e não a do adversário
+		if (currentPlayer != ((ChessPiece) board.piece(position)).getColor()) {
+			// Pegando a cor do jogador atual e comparando com a peça no tabuleiro na posição que eu especifiquei
+			throw new ChessException("A peça escolhida não é sua");
+		}
+		
 		
 		// Existe movimento possiveis para peça?
 		if (!board.piece(position).isThereAnyPossibleMove()) {
