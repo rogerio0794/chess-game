@@ -33,10 +33,12 @@ public class ChessMatch {
 
 	}
 	
+	
+	// Classe necessária para imprimir as posições que a peça pode se mover
 	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
-		Position position = sourcePosition.toPosition();
-		validateSourcePosition(position);
-		return board.piece(position).possibleMoves();
+		Position position = sourcePosition.toPosition(); // Convertendo posição do tabuleiro para posição da matriz
+		validateSourcePosition(position); // Validando se a posição existe
+		return board.piece(position).possibleMoves(); // Tabuleiro tem uma peça que tem seus possiveis movimentos
 	}
 	
 	
