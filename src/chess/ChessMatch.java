@@ -10,6 +10,7 @@ import boardGame.Board;
 import boardGame.Piece;
 import boardGame.Position;
 import chess.pieces.King;
+import chess.pieces.Pawn;
 import chess.pieces.Rook;
 
 public class ChessMatch {
@@ -171,7 +172,10 @@ public class ChessMatch {
 	public Piece makeMove(Position source, Position target) {
 		
 		// Retirando a peça da posição de origem
-		Piece p =board.removePiece(source);
+		ChessPiece p =(ChessPiece) board.removePiece(source);
+		
+		// Incrementando a variavel moveCount
+		p.increaseMovecount();
 		
 		// Remover a possivel peça que está na posição de destino
 		Piece capturedPiece = board.removePiece(target);
@@ -195,7 +199,11 @@ public class ChessMatch {
 		// Basicamente desfazer o que é feito no método makeMove (acima)
 		
 		// Tirando a peça que colocamos no destino
-		Piece p = board.removePiece(target);
+		ChessPiece p = (ChessPiece) board.removePiece(target);
+		
+		// Decrementar a quantidade de movimentos
+		p.decreaseMovecount();
+		
 		// Devolvendo a peça para sua origem
 		board.PlacePiece(p, source);
 		
@@ -344,14 +352,32 @@ public class ChessMatch {
 	private void initialSetup() {
 		// Aqui colocamos a peça de acordo com as posições to tabuleiro de xadrez e não
 		// da matriz
-		placenewPiece('h', 7, new Rook(board, Color.WHITE));
-		placenewPiece('d', 1, new Rook(board, Color.WHITE));
+		placenewPiece('a', 1, new Rook(board, Color.WHITE));
+		placenewPiece('h', 1, new Rook(board, Color.WHITE));
 		placenewPiece('e', 1, new King(board, Color.WHITE));
 		
+		placenewPiece('a', 2, new Pawn(board, Color.WHITE));
+		placenewPiece('b', 2, new Pawn(board, Color.WHITE));
+		placenewPiece('c', 2, new Pawn(board, Color.WHITE));
+		placenewPiece('d', 2, new Pawn(board, Color.WHITE));
+		placenewPiece('e', 2, new Pawn(board, Color.WHITE));
+		placenewPiece('f', 2, new Pawn(board, Color.WHITE));
+		placenewPiece('g', 2, new Pawn(board, Color.WHITE));
+		placenewPiece('h', 2, new Pawn(board, Color.WHITE));
 		
-		placenewPiece('b', 8, new Rook(board, Color.BLACK));
-		placenewPiece('a', 8, new King(board, Color.BLACK));
-
+		
+		
+		placenewPiece('a', 8, new Rook(board, Color.BLACK));
+		placenewPiece('h', 8, new Rook(board, Color.BLACK));
+		placenewPiece('e', 8, new King(board, Color.BLACK));
+		placenewPiece('a', 7, new Pawn(board, Color.BLACK));
+		placenewPiece('b', 7, new Pawn(board, Color.BLACK));
+		placenewPiece('c', 7, new Pawn(board, Color.BLACK));
+		placenewPiece('d', 7, new Pawn(board, Color.BLACK));
+		placenewPiece('e', 7, new Pawn(board, Color.BLACK));
+		placenewPiece('f', 7, new Pawn(board, Color.BLACK));
+		placenewPiece('g', 7, new Pawn(board, Color.BLACK));
+		placenewPiece('h', 7, new Pawn(board, Color.BLACK));
 
 	}
 
