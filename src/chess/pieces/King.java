@@ -2,18 +2,35 @@ package chess.pieces;
 
 import boardGame.Board;
 import boardGame.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class King extends ChessPiece {
+	
+	
+	private ChessMatch chessMatch; // Associação!
+	
 
-	public King(Board board, Color color) {
+	public King(Board board, Color color,ChessMatch chessMatch) {
 		super(board, color);
+		this.chessMatch = chessMatch;
 	}
 	
 	@Override
 	public String toString() {
 		return "K"; // Vai aparecer o "K" na posiçao do torre no tabuleiro
+	}
+	
+	// Testar se a torre está apta para o ROQUE
+	private boolean testRookCastrling (Position position) {
+		
+		// Pegando a peça na posição do rook
+		ChessPiece p = (ChessPiece) getBoard().piece(position);
+		
+		// Testando se tea a peça na posição, se é uma torre, se é amiga (cor igual) e não se moveu ainda
+		return p != null && p instanceof Rook && p.getColor() == getColor() && p.getMoveCount() == 0;
+		
 	}
 	
 	
@@ -88,6 +105,40 @@ public class King extends ChessPiece {
 		}	
 			
 	
+		
+		// Movimento Roque, ver se a horizontal está vazia, se o rei não se moveu e nem está em cheque
+		if (getMoveCount() == 0 && !chessMatch.getCheck()) {
+			
+			
+			// direita (Roque pequeno) pegando a posição da torre da direita em relação ao rei
+			Position posT1 = new Position(position.getRow(), position.getColumn() + 3);
+			if(testRookCastrling(posT1)) {				
+				
+				// Testando se as casas estão vazias
+				Position p1 = new Position(position.getRow(), position.getColumn() + 1);
+				Position p2 = new Position(position.getRow(), position.getColumn() + 2);
+				if (getBoard().piece(p1) == null && getBoard().piece(p2) == null) {					
+					// Roque pequeno permitido
+					mat[position.getRow()][position.getColumn() +2] = true;
+				}
+			}
+			
+			
+		// esquerda (Roque grande) pegando a posição da torre da esquerda em relação ao rei
+			Position posT2 = new Position(position.getRow(), position.getColumn() - 4);
+			if(testRookCastrling(posT2)) {				
+				
+				// Testando se as casas estão vazias
+				Position p1 = new Position(position.getRow(), position.getColumn()  -1);
+				Position p2 = new Position(position.getRow(), position.getColumn() - 2);
+				Position p3 = new Position(position.getRow(), position.getColumn() - 3);
+				if (getBoard().piece(p1) == null && getBoard().piece(p2) == null && getBoard().piece(p3) == null) {					
+					// Roque grande permitido
+					mat[position.getRow()][position.getColumn() -2] = true;
+				}
+			}
+			
+		}
 		
 		
 		
